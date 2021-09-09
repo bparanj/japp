@@ -94,3 +94,40 @@ docker build -t japp:latest .
 ```
 docker run --rm -it -p 3000:3000 -v ${PWD}:/usr/src/app japp
 ```
+
+## Stop and Remove the Database Container
+
+```
+docker stop 6fc1f4716be6
+```
+
+```
+docker container rm my_db2
+```
+
+## Create a New Volume and Mount PostgreSQL Container
+
+```
+ docker run -d -it --mount type=volume,source=my_db_data,target=/var/lib/postgresql/data/pgdata --env POSTGRES_USER=rails --env POSTGRES_PASSWORD=secret123 --env POSTGRES_DB=japp_development --env PGDATA=/var/lib/postgresql/data/pgdata --name my_db2 postgres:11
+```
+
+Check the database logs to verify it is running:
+
+```
+docker logs my_db2
+```
+
+## Run Database Migration
+
+Create the database:
+
+```
+docker run --rm -it --link my_db2:db --mount src=$PWD,dst=/usr/src/app,type=bind --env POSTGRES_HOST=db --env POSTGRES_USER=rails --env POSTGRES_PASSWORD=secret123 japp:latest bin/rails db:create
+```
+
+Run migration:
+
+```
+docker run --rm -it --link my_db2:db --mount src=$PWD,dst=/usr/src/app,type=bind --env POSTGRES_HOST=db --env POSTGRES_USER=rails --env POSTGRES_PASSWORD=secret123 japp:latest bin/rails db:migrate
+```
+
