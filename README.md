@@ -41,3 +41,56 @@ Run the client:
 docker run --rm -it --link my_db2:db postgres:11 psql -h db --user=rails --pass japp_development
 ```
 
+## Configure Database
+
+In database.yml:
+
+```yml
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  username: <%= ENV.fetch('POSTGRES_USER') { 'postgres' } %>
+  password: <%= ENV.fetch('POSTGRES_PASSWORD') { '' } %>
+  host: <%= ENV.fetch('POSTGRES_HOST') { 'db' } %>
+  
+development:
+  <<: *default
+  database: japp_development
+
+test:
+  <<: *default
+  database: japp_test
+
+production:
+  <<: *default
+  database: japp_production
+  username: japp
+  password: <%= ENV['JAPP_DATABASE_PASSWORD'] %>
+```
+
+## Connect Rails to Database Container
+
+```
+docker run -d -it --link my_db2:db --mount src=$PWD,dst=/usr/src,type=bind --env POSTGRES_HOST=db --env POSTGRES_USER=rails --env POSTGRES_PASSWORD=secret123 --publish 3000:3000 --name my_app japp:latest
+```
+
+Rails container is not running. Not able to load localhost:3000. 
+
+Change the exec form to shell form in Dockerfile:
+
+```
+CMD rails s -b 0.0.0.0 -p $PORT
+```
+
+Rebuild the image.
+
+```
+docker build -t japp:latest .
+```
+
+## Run the Rails App
+
+```
+docker run --rm -it -p 3000:3000 -v ${PWD}:/usr/src/app japp
+```

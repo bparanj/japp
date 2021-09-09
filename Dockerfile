@@ -28,4 +28,4 @@ ENV PORT 3000
 EXPOSE $PORT
 
 # Run the Rails server
-CMD ["rails", "s", "-b", "0.0.0.0", "-p", $PORT]
+CMD rails s -b 0.0.0.0 -p $PORT
