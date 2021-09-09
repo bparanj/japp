@@ -131,3 +131,73 @@ Run migration:
 docker run --rm -it --link my_db2:db --mount src=$PWD,dst=/usr/src/app,type=bind --env POSTGRES_HOST=db --env POSTGRES_USER=rails --env POSTGRES_PASSWORD=secret123 japp:latest bin/rails db:migrate
 ```
 
+Create some job posts using the UI.
+
+## Create a Docker Compose File
+
+```
+version: '3.9'
+
+services: 
+  db:
+    image: postgres:11
+    environment: 
+      - PGDATA=/var/lib/postgresql/data/pgdata
+      - POSTGRES_USER=rails
+      - POSTGRES_PASSWORD=secret123
+    volumes: 
+      - dbdata:/var/lib/postgresql/data/pgdata
+  
+  web:
+    build: .
+    ports: 
+      - '3000:3000'
+    environment: 
+      - RAILS_ENV=development
+      - RACK_ENV=development
+      - POSTGRES_USER=rails
+      - POSTGRES_PASSWORD=secret123
+    volumes: 
+      - .:/usr/src/app
+    depends_on: 
+      - db
+
+volumes: 
+  dbdata:
+    driver: local
+```
+
+Shut down and remove previous containers:
+
+```
+docker rm -f my_db my_app
+```
+
+## Build Images using Docker Compose
+
+```
+docker-compose build
+```
+
+Using buildkit with docker-compose: https://www.docker.com/blog/faster-builds-in-compose-thanks-to-buildkit-support/
+
+## Migrate Database using Docker Compose
+
+```
+docker-compose run --rm web rails db:create db:migrate
+```
+
+Verify:
+
+```
+docker-compose up -d web
+japp_db_1 is up-to-date
+Creating japp_web_1 ... 
+Creating japp_web_1 ... error
+
+ERROR: for japp_web_1  Cannot start service web: driver failed programming external connectivity on endpoint japp_web_1 (4ea47c2c1cef96e25b4db14c23e17e35f5cda49eb58e8574dd93839bb9e10982): Bind for 0.0.0.0:3000 failed: port is already allocated
+
+ERROR: for web  Cannot start service web: driver failed programming external connectivity on endpoint japp_web_1 (4ea47c2c1cef96e25b4db14c23e17e35f5cda49eb58e8574dd93839bb9e10982): Bind for 0.0.0.0:3000 failed: port is already allocated
+ERROR: Encountered errors while bringing up the project.
+```
+
