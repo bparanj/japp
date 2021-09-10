@@ -201,3 +201,50 @@ ERROR: for web  Cannot start service web: driver failed programming external con
 ERROR: Encountered errors while bringing up the project.
 ```
 
+Find the Rails server running on 3000 and stop it.
+
+```
+docker container ls
+```
+
+```
+docker container stop 35bd10e9a808
+```
+
+## Persisting Data
+
+```
+docker-compose up -d web
+```
+
+shows no records. To see the records created previously, change the docker-compose.yml volumes section:
+
+```
+volumes: 
+  dbdata:
+    external:
+      name: my_db_data
+```
+
+Stop the container and run:
+
+```
+docker-compose up -d web
+```
+
+Removing pid:
+
+```
+sudo rm server.pid
+```
+
+To work within the container:
+
+```
+docker run --rm -it japp_web /bin/bash
+```
+
+The home page will now show the data that was persisted in my_db_data volume.
+
+
+

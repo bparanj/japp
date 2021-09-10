@@ -26,4 +26,6 @@ services:
 
 volumes: 
   dbdata:
-    driver: local
+    external:
+      name: my_db_data
+      
