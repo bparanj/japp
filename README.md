@@ -246,5 +246,120 @@ docker run --rm -it japp_web /bin/bash
 
 The home page will now show the data that was persisted in my_db_data volume.
 
+## Stopping and Starting Containers
+
+Stop the containers:
+
+```
+docker-compose stop
+```
+
+Start the containers:
+
+```
+docker-compose start
+```
+
+Stop and remove containers:
+
+```
+docker-compose down
+```
+
+Removing individual containers:
+
+```
+docker-compose stop web
+```
+
+```
+docker-compose rm web
+```
+
+Recreate application stack:
+
+```
+docker-compose up web
+```
+
+## Entrypoint
+
+Using the shell form:
+
+```
+CMD rails s -b 0.0.0.0 -p $PORT
+```
+
+in the Dockerfile does not forward the signal, server.pid file gets left behind.
+
+Create docker-entrypoint.sh:
+
+```
+#!/bin/sh
+
+rm -f tmp/pids/server*.pid
+bin/rails server -b 0.0.0.0 -p $PORT --pid tmp/pids/server.`hostname`.pid
+```
+
+Make it executable:
+
+```
+chmod u+x docker-entrypoint.sh
+```
+
+Replace the CMD instruction in Dockerfile with:
+
+```
+CMD ["./docker-entrypoint.sh"]
+```
+
+Rebuild the images:
+
+```
+docker-compose build
+```
+
+Run the app:
+
+```
+docker-compose up web
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Issues
+
+1. Provide a way to create a new Rails app without providing all the steps in the command line and installing anything on the host.
+
 
 
