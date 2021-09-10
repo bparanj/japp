@@ -347,19 +347,24 @@ docker-compose up web
 
 
 
+## Cache Installed Gems
 
+To prevent unncessary bundle install when the Gemfile is not changed. Refer: https://docs.docker.com/buildx/working-with-buildx/
 
+Download buildx from https://github.com/docker/buildx/releases/latest. Create cli-plugins folder in ~/.docker folder and move the downloaded docker buildx to that location. Run:
 
+```
+chmod a+x ~/.docker/cli-plugins/docker-buildx
+```
 
+From the project root run:
 
-
-
-
-
+```
+docker buildx build .
+```
 
 ## Issues
 
 1. Provide a way to create a new Rails app without providing all the steps in the command line and installing anything on the host.
 
-
-
+2. bin/yarn install and bin/rails assets:precompile are not cached by buildx. How to fix this problem?
