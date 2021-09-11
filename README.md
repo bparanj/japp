@@ -633,8 +633,94 @@ From the project root run:
 docker buildx build .
 ```
 
+## File Uploads
+
+Add aws-sdk-s3 gem to Gemfile. Run:
+
+```
+docker-compose run --rm web bundle lock
+```
+
+Build the image:
+
+```
+docker-compose build web
+```
+
+Configure ActiveStorage:
+
+```
+docker-compose run --rm web bin/rails active_storage:install db:migrate
+```
+
+Configure config/storage.yml:
+
+```yml
+test:
+  service: Disk
+  root: <%= Rails.root.join("tmp/storage") %>
+
+local:
+  service: Disk
+  root: <%= Rails.root.join("storage") %>
+
+amazon:
+  service: S3
+  access_key_id: <%= ENV.fetch('S3_ACCESS_KEY_ID', nil) %>
+  secret_access_key: <%= ENV.fetch('S3_SECRET_ACCESS_KEY', nil) %>
+  region: <%= ENV.fetch('S3_REGION', 'us-east-1') %> 
+  bucket: <%= ENV.fetch('S3_BUCKET', 'your_own_bucket') %>
+```
+
+Change production.rb active_storage service to :amazon.
+
+Create attachment assocation in JobApplication:
+
+```
+has_one_attached :cv
+```
+
+Add file_field to job_applications form:
+
+```html
+  <div class="field"> 
+    <%= form.label :cv %>
+    <%= form.file_field :cv %>
+  </div>
+```
+
+Update job_applications_controller to permit cv field:
+
+```ruby
+    def job_application_params
+      params.require(:job_application).permit(:body, :cv)
+    end
+```
+
+Allow admins to view the uploaded file, update job_applications/show.html.erb:
+
+```html
+<% if @job_application.cv.attached? %>
+  <p>
+    <strong>Attached CV</strong>
+    <%= link_to 'Download', rails_blob_path(@job_application.cv, disposition: 'attachment') %>
+  </p>
+<% end %>
+```
+
+Upload a pdf file as a job applicant.
+
+```
+docker-compose up -d web
+```
+
+Logout and login as admin. View the uploaded file and download it.
+
+
 ## Issues
 
 1. Provide a way to create a new Rails app without providing all the steps in the command line and installing anything on the host.
 
 2. bin/yarn install and bin/rails assets:precompile are not cached by buildx. How to fix this problem?
+
+3. How to tail the development log file? 

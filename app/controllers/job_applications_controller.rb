@@ -2,8 +2,8 @@ class JobApplicationsController < ApplicationController
   before_action :require_login
   before_action :require_admin, except: [:new, :create]
 
-  before_action :set_job_application, only: %i[ show edit update destroy ]
   before_action :set_job_post
+  before_action :set_job_application, only: %i[ show edit update destroy ]
 
   # GET /job_applications or /job_applications.json
   def index
@@ -69,11 +69,11 @@ class JobApplicationsController < ApplicationController
 
     # Use callbacks to share common setup or constraints between actions.
     def set_job_application
-      @job_application = @job_post.job_applications..find(params[:id])
+      @job_application = @job_post.job_applications.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
     def job_application_params
-      params.require(:job_application).permit(:body)
+      params.require(:job_application).permit(:body, :cv)
     end
 end

@@ -3,4 +3,5 @@ class JobApplication < ApplicationRecord
   belongs_to :user
 
   validates :body, presence: true
+  has_one_attached :cv
 end
