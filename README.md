@@ -823,6 +823,120 @@ Fixing any stale or leftover data:
 docker-compose run --rm -e RAILS_ENV=test web bin/rails db:drop db:create db:schema:load
 ```
 
+## Using Gaurd to Run Tests Locally
+
+Add guard to Gemfile in development group:
+
+```
+gem 'guard'
+gem 'guard-minitest'
+```
+
+Regemerate Gemfile.lock:
+
+```
+docker-compose run --rm web bundle lock
+```
+
+Rebuild the image:
+
+```
+docker-compose build
+```
+
+Add a guard container to docker-compose.yml:
+
+```
+  guard:
+    build: .
+    environment: 
+      - RAILS_ENV=development
+      - RACK_ENV=development
+      - POSTGRES_USER=rails
+      - POSTGRES_PASSWORD=secret123
+    volumes: 
+      - .:/usr/src/app
+    depends_on: 
+      - db
+    command: bundle exec guard --no-bundler-warning --no-interactions
+```
+
+Initialize the Guard configuration:
+
+```
+docker-compose run --rm web guard init minitest
+```
+
+Warning: you have a Gemfile, but you're not using bundler or RUBYGEMS_GEMDEPS
+
+Update the Guardfile. Run Guard via Docker:
+
+```
+docker-compose run --rm guard
+```
+
+Error:
+
+/usr/local/bundle/gems/webdrivers-4.6.1/lib/webdrivers/chrome_finder.rb:21:in `location': Failed to find Chrome binary. (Webdrivers::BrowserNotFound)
+	from /usr/local/bundle/gems/webdrivers-4.6.1/lib/webdrivers/chrome_finder.rb:10:in `version'
+	from /usr/local/bundle/gems/webdrivers-4.6.1/lib/webdrivers/chromedriver.rb:51:in `browser_version'
+	from /usr/local/bundle/gems/webdrivers-4.6.1/lib/webdrivers/chromedriver.rb:145:in `browser_build_version'
+	from /usr/local/bundle/gems/webdrivers-4.6.1/lib/webdrivers/chromedriver.rb:32:in `latest_version'
+	from /usr/local/bundle/gems/webdrivers-4.6.1/lib/webdrivers/common.rb:135:in `correct_binary?'
+	from /usr/local/bundle/gems/webdrivers-4.6.1/lib/webdrivers/common.rb:91:in `update'
+	from /usr/local/bundle/gems/webdrivers-4.6.1/lib/webdrivers/chromedriver.rb:160:in `block in <main>'
+	from /usr/local/bundle/gems/actionpack-6.1.4.1/lib/action_dispatch/system_testing/browser.rb:37:in `preload'
+	from /usr/local/bundle/gems/actionpack-6.1.4.1/lib/action_dispatch/system_testing/driver.rb:15:in `initialize'
+	from /usr/local/bundle/gems/actionpack-6.1.4.1/lib/action_dispatch/system_test_case.rb:157:in `new'
+	from /usr/local/bundle/gems/actionpack-6.1.4.1/lib/action_dispatch/system_test_case.rb:157:in `driven_by'
+	from /usr/src/app/test/application_system_test_case.rb:4:in `<class:ApplicationSystemTestCase>'
+	from /usr/src/app/test/application_system_test_case.rb:3:in `<main>'
+	from /usr/local/bundle/gems/bootsnap-1.8.1/lib/bootsnap/load_path_cache/core_ext/kernel_require.rb:23:in `require'
+	from /usr/local/bundle/gems/bootsnap-1.8.1/lib/bootsnap/load_path_cache/core_ext/kernel_require.rb:23:in `block in require_with_bootsnap_lfi'
+	from /usr/local/bundle/gems/bootsnap-1.8.1/lib/bootsnap/load_path_cache/loaded_features_index.rb:92:in `register'
+	from /usr/local/bundle/gems/bootsnap-1.8.1/lib/bootsnap/load_path_cache/core_ext/kernel_require.rb:22:in `require_with_bootsnap_lfi'
+	from /usr/local/bundle/gems/bootsnap-1.8.1/lib/bootsnap/load_path_cache/core_ext/kernel_require.rb:31:in `require'
+	from /usr/local/bundle/gems/zeitwerk-2.4.2/lib/zeitwerk/kernel.rb:34:in `require'
+	from /usr/src/app/test/system/job_posts_test.rb:1:in `<main>'
+	from /usr/local/bundle/gems/bootsnap-1.8.1/lib/bootsnap/load_path_cache/core_ext/kernel_require.rb:23:in `require'
+	from /usr/local/bundle/gems/bootsnap-1.8.1/lib/bootsnap/load_path_cache/core_ext/kernel_require.rb:23:in `block in require_with_bootsnap_lfi'
+	from /usr/local/bundle/gems/bootsnap-1.8.1/lib/bootsnap/load_path_cache/loaded_features_index.rb:92:in `register'
+	from /usr/local/bundle/gems/bootsnap-1.8.1/lib/bootsnap/load_path_cache/core_ext/kernel_require.rb:22:in `require_with_bootsnap_lfi'
+	from /usr/local/bundle/gems/bootsnap-1.8.1/lib/bootsnap/load_path_cache/core_ext/kernel_require.rb:31:in `require'
+	from /usr/local/bundle/gems/zeitwerk-2.4.2/lib/zeitwerk/kernel.rb:34:in `require'
+	from /usr/local/bundle/gems/railties-6.1.4.1/lib/rails/test_unit/runner.rb:50:in `block in load_tests'
+	from /usr/local/bundle/gems/railties-6.1.4.1/lib/rails/test_unit/runner.rb:50:in `each'
+	from /usr/local/bundle/gems/railties-6.1.4.1/lib/rails/test_unit/runner.rb:50:in `load_tests'
+	from /usr/local/bundle/gems/railties-6.1.4.1/lib/rails/test_unit/runner.rb:39:in `run'
+	from /usr/local/bundle/gems/railties-6.1.4.1/lib/rails/commands/test/test_command.rb:33:in `perform'
+	from /usr/local/bundle/gems/thor-1.1.0/lib/thor/command.rb:27:in `run'
+	from /usr/local/bundle/gems/thor-1.1.0/lib/thor/invocation.rb:127:in `invoke_command'
+	from /usr/local/bundle/gems/thor-1.1.0/lib/thor.rb:392:in `dispatch'
+	from /usr/local/bundle/gems/railties-6.1.4.1/lib/rails/command/base.rb:69:in `perform'
+	from /usr/local/bundle/gems/railties-6.1.4.1/lib/rails/command.rb:48:in `invoke'
+	from /usr/local/bundle/gems/railties-6.1.4.1/lib/rails/commands.rb:18:in `<main>'
+	from /usr/local/bundle/gems/bootsnap-1.8.1/lib/bootsnap/load_path_cache/core_ext/kernel_require.rb:23:in `require'
+	from /usr/local/bundle/gems/bootsnap-1.8.1/lib/bootsnap/load_path_cache/core_ext/kernel_require.rb:23:in `block in require_with_bootsnap_lfi'
+	from /usr/local/bundle/gems/bootsnap-1.8.1/lib/bootsnap/load_path_cache/loaded_features_index.rb:92:in `register'
+	from /usr/local/bundle/gems/bootsnap-1.8.1/lib/bootsnap/load_path_cache/core_ext/kernel_require.rb:22:in `require_with_bootsnap_lfi'
+	from /usr/local/bundle/gems/bootsnap-1.8.1/lib/bootsnap/load_path_cache/core_ext/kernel_require.rb:31:in `require'
+	from /usr/local/bundle/gems/zeitwerk-2.4.2/lib/zeitwerk/kernel.rb:34:in `require'
+	from /usr/src/app/bin/rails:5:in `<main>'
+	from /usr/local/bundle/gems/bootsnap-1.8.1/lib/bootsnap/load_path_cache/core_ext/kernel_require.rb:60:in `load'
+	from /usr/local/bundle/gems/bootsnap-1.8.1/lib/bootsnap/load_path_cache/core_ext/kernel_require.rb:60:in `load'
+	from /usr/local/bundle/gems/activesupport-6.1.4.1/lib/active_support/fork_tracker.rb:10:in `block in fork'
+	from /usr/local/bundle/gems/activesupport-6.1.4.1/lib/active_support/fork_tracker.rb:8:in `fork'
+	from /usr/local/bundle/gems/activesupport-6.1.4.1/lib/active_support/fork_tracker.rb:8:in `fork'
+	from /usr/local/bundle/gems/activesupport-6.1.4.1/lib/active_support/fork_tracker.rb:27:in `fork'
+	from /usr/local/lib/ruby/2.6.0/rubygems/core_ext/kernel_require.rb:54:in `require'
+	from /usr/local/lib/ruby/2.6.0/rubygems/core_ext/kernel_require.rb:54:in `require'
+	from -e:1:in `<main>'
+
+22:32:39 - INFO - Guard is now watching at '/usr/src/app'
+
+
+
+
 ## Issues
 
 1. Provide a way to create a new Rails app without providing all the steps in the command line and installing anything on the host.
