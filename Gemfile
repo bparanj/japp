@@ -33,6 +33,7 @@ gem 'aws-sdk-s3', require: false
 gem 'bootsnap', '>= 1.4.4', require: false
 
 group :development, :test do
+  gem 'factory_bot_rails', '~> 5.2.0'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
 end
@@ -48,6 +49,8 @@ group :development do
 end
 
 group :test do
+  gem 'minitest-spec-rails', '~> 6.0.2'
+  
   # Adds support for Capybara system testing and selenium driver
   gem 'capybara', '>= 3.26'
   gem 'selenium-webdriver'

@@ -716,11 +716,116 @@ docker-compose up -d web
 
 Logout and login as admin. View the uploaded file and download it.
 
+## Testing Locally Using Docker
+
+Add factory_bot_rails gem to development and test group in Gemfile.
+
+```ruby
+gem 'factory_bot_rails', '~> 5.2.0'
+```
+
+Add gem 'minitest-spec-rails', '~> 6.0.2' to test group in Gemfile.
+
+```ruby
+gem 'minitest-spec-rails', '~> 6.0.2'
+```
+
+Update the Gemfile.lock and rebuild Docker image:
+
+```
+docker-compose run --rm web bundle lock
+docker-compose build
+```
+
+Run the test suite:
+
+```
+docker-compose run --rm -e RAILS_ENV=test web bin/rails test
+```
+
+Fix the broken tests:
+
+```
+rm test/fixtures/*.yml
+```
+
+In test_helper.rb, comment out the line:
+
+```
+fixtures :all
+```
+
+Create factories for the models. In test/factories/users.rb:
+
+```
+FactoryBot.define do
+  factory :user do
+    first_name { 'A' }
+    last_name { 'User' }
+    email { 'user@example.com' }
+    admin { false }
+    password { 'secret123' }
+
+    trait :admin do
+      first_name { 'An' }last_name { 'Admin' }
+      admin { true }
+      email { 'admin@example.com' }
+    end
+  end
+end
+```
+
+In test/factories/job_posts.rb:
+
+```
+FactoryBot.define do
+  factory :job_post do
+    title { 'A Job Post' }
+    body { 'Work for us at our company.' }
+  end
+end
+```
+
+In test/factories/job_applications.rb:
+
+```
+FactoryBot.define do
+  factory :job_application do
+    body { "I'd like to apply for this job" }
+
+    user
+    job_post
+  end
+end
+```
+
+In config/environments/test.rb, configure clearance middleware in tests:
+
+```
+config.middleware.use Clearance::BackDoor
+```
+
+Update the tests. Run the tests:
+
+```
+docker-compose run --rm -e RAILS_ENV=test web bin/rails test test/controllers/job_applications_controller_test.rb
+```
+
+Run an individual test:
+
+```
+docker-compose run --rm -e RAILS_ENV=test web bin/rails test test/controllers/job_applications_controller_test.rb:10
+```
+
+Fixing any stale or leftover data:
+
+```
+docker-compose run --rm -e RAILS_ENV=test web bin/rails db:drop db:create db:schema:load
+```
 
 ## Issues
 
 1. Provide a way to create a new Rails app without providing all the steps in the command line and installing anything on the host.
-
 2. bin/yarn install and bin/rails assets:precompile are not cached by buildx. How to fix this problem?
-
 3. How to tail the development log file? 
+4. Setup localstack.
