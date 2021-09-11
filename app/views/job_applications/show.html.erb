@@ -1,0 +1,13 @@
+<h1> Application for <%= @job_post.title %> </h1>
+
+<p>
+  <strong>Applicant:</strong>
+  <%= @job_application.user.email %>
+</p>
+
+<p>
+  <strong>Body:</strong>
+  <%= @job_application.body %>
+</p>
+
+<%= link_to 'Back', job_post_job_applications_path(@job_post) %>
