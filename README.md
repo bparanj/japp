@@ -935,6 +935,153 @@ Error:
 22:32:39 - INFO - Guard is now watching at '/usr/src/app'
 
 
+## Fix ChromeDriver Error
+
+In the test group of the Gemfile, add:
+
+```
+  gem 'webdrivers', require: !ENV['SELENIUM_REMOTE_URL']
+```
+
+Update the docker-compose.yml:
+
+```yml
+version: '3.9'
+
+services: 
+  db:
+    image: postgres:11
+    environment: 
+      - PGDATA=/var/lib/postgresql/data/pgdata
+      - POSTGRES_USER=rails
+      - POSTGRES_PASSWORD=secret123
+    volumes: 
+      - dbdata:/var/lib/postgresql/data/pgdata
+  
+  web:
+    build: .
+    ports: 
+      - '3000:3000'
+    environment: 
+      - SELENIUM_REMOTE_URL=http://webdriver_chrome:4444/wd/hub
+      - RAILS_ENV=development
+      - RACK_ENV=development
+      - POSTGRES_USER=rails
+      - POSTGRES_PASSWORD=secret123
+    volumes: 
+      - .:/usr/src/app
+    depends_on: 
+      - db
+      - webdriver_chrome
+
+  webdriver_chrome:
+    image: selenium/standalone-chrome
+
+  guard:
+    build: .
+    environment: 
+      - RAILS_ENV=development
+      - RACK_ENV=development
+      - POSTGRES_USER=rails
+      - POSTGRES_PASSWORD=secret123
+    volumes: 
+      - .:/usr/src/app
+    depends_on: 
+      - db
+    command: bundle exec guard --no-bundler-warning --no-interactions
+  
+volumes: 
+  dbdata:
+    external:
+      name: my_db_data
+```
+
+Rebuild the Docker image:
+
+```
+docker-compose build
+```
+
+STILL THE SAME ERROR.
+
+Update the Dockerfile:
+
+```
+FROM ruby:2.6
+
+# Prereqs
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
+&& echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
+&& apt-get update -q \
+&& apt-get install -y nodejs yarn
+
+RUN curl https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -o /chrome.deb \
+    && dpkg -i /chrome.deb || apt-get install -yf \
+    && rm /chrome.deb
+    
+ARG CHROMEDRIVER_VERSION=83.0.4103.39
+
+RUN apt-get install -y libgconf2-dev \
+    && curl https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip -o /tmp/chromedriver.zip \
+    && unzip /tmp/chromedriver.zip -d /usr/local/bin/ \
+    && rm /tmp/chromedriver.zip \
+    && chmod +x /usr/local/bin/chromedriver
+
+# Cache gems
+WORKDIR /tmp
+
+ADD Gemfile .
+ADD Gemfile.lock .
+
+RUN bundle install
+
+# Copy app
+WORKDIR /usr/src/app
+
+ADD . /usr/src/app
+
+# Precompile assets
+RUN bin/yarn install
+RUN bin/rails assets:precompile
+
+# Expose port 3000 to other containers
+ENV PORT 3000
+EXPOSE $PORT
+
+CMD ["./docker-entrypoint.sh"]
+```
+
+Rebuild the image:
+
+```
+docker-compose build
+```
+
+Check the version:
+
+```
+docker-compose run --rm web google-chrome --version
+Creating japp_web_run ... done
+Google Chrome 93.0.4577.63 
+```
+
+```
+docker-compose run --rm web chromedriver --version
+Creating japp_web_run ... done
+ChromeDriver 83.0.4103.39 (ccbf011cb2d2b19b506d844400483861342c20cd-refs/branch-heads/4103@{#416})
+```
+
+Update chrome driver version in the Docker file:
+
+```
+ARG CHROMEDRIVER_VERSION=93.0.4577.63
+```
+
+Run the system test:
+
+```
+docker-compose run --rm -e RAILS_ENV=test web bin/rails test
+```
 
 
 ## Issues
