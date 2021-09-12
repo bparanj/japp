@@ -19,10 +19,12 @@ services:
       - RACK_ENV=development
       - POSTGRES_USER=rails
       - POSTGRES_PASSWORD=secret123
+      - HUB_URL=http://chrome:4444
     volumes: 
       - .:/usr/src/app
     depends_on: 
       - db
+      - chrome
 
   guard:
     build: .
@@ -37,6 +39,11 @@ services:
       - db
     command: bundle exec guard --no-bundler-warning --no-interactions
   
+  chrome:
+    image: selenium/standalone-chrome:93.0
+    volumes:
+      - /dev/shm:/dev/shm
+
 volumes: 
   dbdata:
     external:
