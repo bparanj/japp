@@ -1083,6 +1083,29 @@ Run the system test:
 docker-compose run --rm -e RAILS_ENV=test web bin/rails test
 ```
 
+View screenshots:
+
+```
+sudo apt  install eog
+```
+
+```
+eog tmp/screenshots/capybara-202109121525182762858822.png
+```
+
+or
+
+```
+xdg-open tmp/screenshots/capybara-202109121525182762858822.png
+```
+
+Run all system tests:
+
+```
+docker-compose run --rm -e RAILS_ENV=test web bin/rails test test:system
+```
+
+
 
 ## Issues
 

@@ -13,6 +13,8 @@ class JobPostsTest < ApplicationSystemTestCase
 
     click_on 'Create Job post'
 
+    save_screenshot
+    
     assert_text 'Job post was successfully created'
     click_on 'Back'
   end
