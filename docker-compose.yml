@@ -44,6 +44,9 @@ services:
     volumes:
       - /dev/shm:/dev/shm
 
+  redis:
+    image: redis
+    
 volumes: 
   dbdata:
     external:

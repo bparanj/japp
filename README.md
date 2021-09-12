@@ -676,7 +676,7 @@ Change production.rb active_storage service to :amazon.
 
 Create attachment assocation in JobApplication:
 
-```
+```ruby
 has_one_attached :cv
 ```
 
@@ -757,7 +757,7 @@ fixtures :all
 
 Create factories for the models. In test/factories/users.rb:
 
-```
+```ruby
 FactoryBot.define do
   factory :user do
     first_name { 'A' }
@@ -777,7 +777,7 @@ end
 
 In test/factories/job_posts.rb:
 
-```
+```ruby
 FactoryBot.define do
   factory :job_post do
     title { 'A Job Post' }
@@ -788,7 +788,7 @@ end
 
 In test/factories/job_applications.rb:
 
-```
+```ruby
 FactoryBot.define do
   factory :job_application do
     body { "I'd like to apply for this job" }
@@ -877,69 +877,18 @@ docker-compose run --rm guard
 
 Error:
 
+```
 /usr/local/bundle/gems/webdrivers-4.6.1/lib/webdrivers/chrome_finder.rb:21:in `location': Failed to find Chrome binary. (Webdrivers::BrowserNotFound)
 	from /usr/local/bundle/gems/webdrivers-4.6.1/lib/webdrivers/chrome_finder.rb:10:in `version'
-	from /usr/local/bundle/gems/webdrivers-4.6.1/lib/webdrivers/chromedriver.rb:51:in `browser_version'
-	from /usr/local/bundle/gems/webdrivers-4.6.1/lib/webdrivers/chromedriver.rb:145:in `browser_build_version'
-	from /usr/local/bundle/gems/webdrivers-4.6.1/lib/webdrivers/chromedriver.rb:32:in `latest_version'
-	from /usr/local/bundle/gems/webdrivers-4.6.1/lib/webdrivers/common.rb:135:in `correct_binary?'
-	from /usr/local/bundle/gems/webdrivers-4.6.1/lib/webdrivers/common.rb:91:in `update'
-	from /usr/local/bundle/gems/webdrivers-4.6.1/lib/webdrivers/chromedriver.rb:160:in `block in <main>'
-	from /usr/local/bundle/gems/actionpack-6.1.4.1/lib/action_dispatch/system_testing/browser.rb:37:in `preload'
-	from /usr/local/bundle/gems/actionpack-6.1.4.1/lib/action_dispatch/system_testing/driver.rb:15:in `initialize'
-	from /usr/local/bundle/gems/actionpack-6.1.4.1/lib/action_dispatch/system_test_case.rb:157:in `new'
-	from /usr/local/bundle/gems/actionpack-6.1.4.1/lib/action_dispatch/system_test_case.rb:157:in `driven_by'
-	from /usr/src/app/test/application_system_test_case.rb:4:in `<class:ApplicationSystemTestCase>'
-	from /usr/src/app/test/application_system_test_case.rb:3:in `<main>'
-	from /usr/local/bundle/gems/bootsnap-1.8.1/lib/bootsnap/load_path_cache/core_ext/kernel_require.rb:23:in `require'
-	from /usr/local/bundle/gems/bootsnap-1.8.1/lib/bootsnap/load_path_cache/core_ext/kernel_require.rb:23:in `block in require_with_bootsnap_lfi'
-	from /usr/local/bundle/gems/bootsnap-1.8.1/lib/bootsnap/load_path_cache/loaded_features_index.rb:92:in `register'
-	from /usr/local/bundle/gems/bootsnap-1.8.1/lib/bootsnap/load_path_cache/core_ext/kernel_require.rb:22:in `require_with_bootsnap_lfi'
-	from /usr/local/bundle/gems/bootsnap-1.8.1/lib/bootsnap/load_path_cache/core_ext/kernel_require.rb:31:in `require'
-	from /usr/local/bundle/gems/zeitwerk-2.4.2/lib/zeitwerk/kernel.rb:34:in `require'
-	from /usr/src/app/test/system/job_posts_test.rb:1:in `<main>'
-	from /usr/local/bundle/gems/bootsnap-1.8.1/lib/bootsnap/load_path_cache/core_ext/kernel_require.rb:23:in `require'
-	from /usr/local/bundle/gems/bootsnap-1.8.1/lib/bootsnap/load_path_cache/core_ext/kernel_require.rb:23:in `block in require_with_bootsnap_lfi'
-	from /usr/local/bundle/gems/bootsnap-1.8.1/lib/bootsnap/load_path_cache/loaded_features_index.rb:92:in `register'
-	from /usr/local/bundle/gems/bootsnap-1.8.1/lib/bootsnap/load_path_cache/core_ext/kernel_require.rb:22:in `require_with_bootsnap_lfi'
-	from /usr/local/bundle/gems/bootsnap-1.8.1/lib/bootsnap/load_path_cache/core_ext/kernel_require.rb:31:in `require'
-	from /usr/local/bundle/gems/zeitwerk-2.4.2/lib/zeitwerk/kernel.rb:34:in `require'
-	from /usr/local/bundle/gems/railties-6.1.4.1/lib/rails/test_unit/runner.rb:50:in `block in load_tests'
-	from /usr/local/bundle/gems/railties-6.1.4.1/lib/rails/test_unit/runner.rb:50:in `each'
-	from /usr/local/bundle/gems/railties-6.1.4.1/lib/rails/test_unit/runner.rb:50:in `load_tests'
-	from /usr/local/bundle/gems/railties-6.1.4.1/lib/rails/test_unit/runner.rb:39:in `run'
-	from /usr/local/bundle/gems/railties-6.1.4.1/lib/rails/commands/test/test_command.rb:33:in `perform'
-	from /usr/local/bundle/gems/thor-1.1.0/lib/thor/command.rb:27:in `run'
-	from /usr/local/bundle/gems/thor-1.1.0/lib/thor/invocation.rb:127:in `invoke_command'
-	from /usr/local/bundle/gems/thor-1.1.0/lib/thor.rb:392:in `dispatch'
-	from /usr/local/bundle/gems/railties-6.1.4.1/lib/rails/command/base.rb:69:in `perform'
-	from /usr/local/bundle/gems/railties-6.1.4.1/lib/rails/command.rb:48:in `invoke'
-	from /usr/local/bundle/gems/railties-6.1.4.1/lib/rails/commands.rb:18:in `<main>'
-	from /usr/local/bundle/gems/bootsnap-1.8.1/lib/bootsnap/load_path_cache/core_ext/kernel_require.rb:23:in `require'
-	from /usr/local/bundle/gems/bootsnap-1.8.1/lib/bootsnap/load_path_cache/core_ext/kernel_require.rb:23:in `block in require_with_bootsnap_lfi'
-	from /usr/local/bundle/gems/bootsnap-1.8.1/lib/bootsnap/load_path_cache/loaded_features_index.rb:92:in `register'
-	from /usr/local/bundle/gems/bootsnap-1.8.1/lib/bootsnap/load_path_cache/core_ext/kernel_require.rb:22:in `require_with_bootsnap_lfi'
-	from /usr/local/bundle/gems/bootsnap-1.8.1/lib/bootsnap/load_path_cache/core_ext/kernel_require.rb:31:in `require'
-	from /usr/local/bundle/gems/zeitwerk-2.4.2/lib/zeitwerk/kernel.rb:34:in `require'
-	from /usr/src/app/bin/rails:5:in `<main>'
-	from /usr/local/bundle/gems/bootsnap-1.8.1/lib/bootsnap/load_path_cache/core_ext/kernel_require.rb:60:in `load'
-	from /usr/local/bundle/gems/bootsnap-1.8.1/lib/bootsnap/load_path_cache/core_ext/kernel_require.rb:60:in `load'
-	from /usr/local/bundle/gems/activesupport-6.1.4.1/lib/active_support/fork_tracker.rb:10:in `block in fork'
-	from /usr/local/bundle/gems/activesupport-6.1.4.1/lib/active_support/fork_tracker.rb:8:in `fork'
-	from /usr/local/bundle/gems/activesupport-6.1.4.1/lib/active_support/fork_tracker.rb:8:in `fork'
-	from /usr/local/bundle/gems/activesupport-6.1.4.1/lib/active_support/fork_tracker.rb:27:in `fork'
-	from /usr/local/lib/ruby/2.6.0/rubygems/core_ext/kernel_require.rb:54:in `require'
-	from /usr/local/lib/ruby/2.6.0/rubygems/core_ext/kernel_require.rb:54:in `require'
-	from -e:1:in `<main>'
 
 22:32:39 - INFO - Guard is now watching at '/usr/src/app'
-
+```
 
 ## Fix ChromeDriver Error
 
 In the test group of the Gemfile, add:
 
-```
+```ruby
   gem 'webdrivers', require: !ENV['SELENIUM_REMOTE_URL']
 ```
 
@@ -1105,11 +1054,137 @@ Run all system tests:
 docker-compose run --rm -e RAILS_ENV=test web bin/rails test test:system
 ```
 
+## Tail the Development Log File
 
+```
+docker-compose logs -f web
+```
+
+The log file is created in log/development.log. 
+
+## Running One-Off Commands
+
+Start a new disposable container and run:
+
+```
+docker-compose run --rm web echo 'ran a different command'
+```
+
+Use a running container and run the command:
+
+```
+docker-compose exec web echo 'ran a different command'
+```
+
+## Cleaning Up
+
+Stop containers and remove network and volumes:
+
+```
+docker-compose down
+```
+
+Remove only the containers:
+
+```
+docker-compose rm
+```
+
+Remove dangling images:
+
+```
+docker image prune
+```
+
+Remove unused containers:
+
+```
+docker container prune
+```
+
+Free up unused resources:
+
+```
+docker system prune
+```
+
+## Managing Containers
+
+List running containers:
+
+```
+docker-compose ps
+```
+
+Manage container life cycle:
+
+```
+docker-compose start|stop|kill|restart|pause|unpause|rm service-name
+```
+
+View the logs:
+
+```
+docker-compose logs [-f] service-name
+```
+
+Run a one-off command in a new, disposable container:
+
+```
+docker-compose run --rm service-name some-command
+```
+
+Run a one-off command in a running container:
+
+```
+docker-compose exec service-name some-command
+```
+
+Rebuild an image:
+
+```
+docker-compose build service-name
+```
+
+Launch all the services of the application:
+
+```
+docker-compose up
+```
+
+## Start a Redis Server
+
+```
+docker run --name redis-container redis
+```
+
+Start Redis server:
+
+```
+docker-compose up -d redis
+```
+
+View the redis logs:
+
+```
+docker-compose logs redis
+```
+
+Connect to the Redis server:
+
+```
+docker-compose run --rm redis redis-cli -h redis
+```
+
+List networks:
+
+```
+docker network ls
+```
 
 ## Issues
 
 1. Provide a way to create a new Rails app without providing all the steps in the command line and installing anything on the host.
 2. bin/yarn install and bin/rails assets:precompile are not cached by buildx. How to fix this problem?
-3. How to tail the development log file? 
-4. Setup localstack.
+3. Setup localstack.
+4. Configure Rails to log to stdout
