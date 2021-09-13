@@ -1182,6 +1182,64 @@ List networks:
 docker network ls
 ```
 
+## Connecting Rails app to Redis
+
+Uncomment redis gem in Gemfile:
+
+```ruby
+gem 'redis', '~> 4.0'
+```
+
+Stop Rails container:
+
+```
+docker-compose stop web
+```
+
+Rebuild custom Rails image:
+
+```
+docker-compose build web
+```
+
+Start the new container for the latest Rails image:
+
+```
+docker-compose up -d web
+```
+
+Create a new controller with index action:
+
+```
+docker-compose exec web bin/rails g controller welcome index
+```
+
+Update the index action:
+
+```ruby
+def index
+  redis = Redis.new(host: "redis", port: 6379)
+  redis.incr("page hits")
+
+  @page_hits = redis.get("page hits")
+end
+```
+
+Display the page hits in index:
+
+```html
+Page hits : <%= pluralize(@page_hits, 'time') %>
+```
+
+Update routes.rb:
+
+```ruby
+  root to: 'welcome#index'
+```
+
+
+
+
 ## Issues
 
 1. Provide a way to create a new Rails app without providing all the steps in the command line and installing anything on the host.

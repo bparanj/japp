@@ -1,7 +1,8 @@
 Rails.application.routes.draw do
+  get 'welcome/index'
   resources :job_posts do
     resources :job_applications
   end
 
-  root to: redirect("/job_posts")
+  root to: 'welcome#index'
 end
