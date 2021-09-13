@@ -1,0 +1,3 @@
+POSTGRES_USER=rails
+POSTGRES_PASSWORD=secret123
+PGDATA=/var/lib/postgresql/data/pgdata

@@ -349,7 +349,7 @@ docker-compose run --rm web bin/rails g clearance:install
 
 Configure clearance gem in development.rb:
 
-```
+```ruby
 config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
 ```
 
@@ -385,10 +385,22 @@ Create JobApplication model:
 docker-compose run --rm web bin/rails g scaffold JobApplication body:text job_post:references user:references
 ```
 
+or
+
+```
+docker-compose exec web bin/rails ...
+```
+
 Run the migrations:
 
 ```
 docker-compose run --rm web bin/rails db:migrate
+```
+
+or
+
+```
+docker-compose exec web bin/rails db:migrate
 ```
 
 Configure associations and validations:
@@ -1237,8 +1249,26 @@ Update routes.rb:
   root to: 'welcome#index'
 ```
 
+## Running PSQL Command
 
+Indirect way:
 
+```
+docker-compose run db bash
+/# psql --host=db --username=rails --dbname=japp_development
+```
+
+Direct way:
+
+```
+docker-compose run --rm db psql --username rails -h db --dbname=japp_development
+```
+
+or
+
+```
+docker-compose run --rm db psql -U rails -h db --dbname=japp_development
+```
 
 ## Issues
 

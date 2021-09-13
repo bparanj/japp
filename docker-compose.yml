@@ -3,10 +3,8 @@ version: '3.9'
 services: 
   db:
     image: postgres:11
-    environment: 
-      - PGDATA=/var/lib/postgresql/data/pgdata
-      - POSTGRES_USER=rails
-      - POSTGRES_PASSWORD=secret123
+    env_file: 
+      - .env/development/database
     volumes: 
       - dbdata:/var/lib/postgresql/data/pgdata
   
@@ -14,12 +12,10 @@ services:
     build: .
     ports: 
       - '3000:3000'
-    environment: 
-      - RAILS_ENV=development
-      - RACK_ENV=development
-      - POSTGRES_USER=rails
-      - POSTGRES_PASSWORD=secret123
-      - HUB_URL=http://chrome:4444
+    env_file: 
+      - .env/development/database
+      - .env/development/web
+      - .env/development/browser
     volumes: 
       - .:/usr/src/app
     depends_on: 
@@ -28,11 +24,9 @@ services:
 
   guard:
     build: .
-    environment: 
-      - RAILS_ENV=development
-      - RACK_ENV=development
-      - POSTGRES_USER=rails
-      - POSTGRES_PASSWORD=secret123
+    env_file: 
+      - .env/development/web
+      - .env/development/database
     volumes: 
       - .:/usr/src/app
     depends_on: 
