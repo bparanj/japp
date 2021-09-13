@@ -12,12 +12,14 @@ services:
     build: .
     ports: 
       - '3000:3000'
+      - '4000:4000'
     env_file: 
       - .env/development/database
       - .env/development/web
       - .env/development/browser
     volumes: 
       - .:/usr/src/app
+      - gem_cache:/gems
     depends_on: 
       - db
       - chrome
@@ -29,6 +31,7 @@ services:
       - .env/development/database
     volumes: 
       - .:/usr/src/app
+      - gem_cache:/gems
     depends_on: 
       - db
     command: bundle exec guard --no-bundler-warning --no-interactions
@@ -42,6 +45,7 @@ services:
     image: redis
     
 volumes: 
+  gem_cache:
   dbdata:
     external:
       name: my_db_data

@@ -1285,7 +1285,62 @@ Add byebug to set a breakpoint in the code. Start an interactive session:
 docker-compose run --service-ports web
 ```
 
-Debug in the interactive terminal session.
+Debug in the interactive terminal session. Remove byebug and start web container:
+
+```
+docker-compose up -d web
+```
+
+## Caching Gems
+
+In Dockerfile, add:
+
+```
+ENV BUNDLE_PATH /gems
+```
+
+before bundle install. In docker-compose.yml, define the volume for the gem cache directory:
+
+```
+   volumes: 
+      - .:/usr/src/app
+      - gem_cache:/gems
+...
+volumes: 
+  gem_cache:
+```
+
+Rebuild web image:
+
+```
+docker-compose build web
+```
+
+Create a new web container that uses gem_cache volume:
+
+```
+docker-compose up -d web
+```
+
+Bundler commmands can be run in the web container:
+
+```
+docker-compose exec web bundle install
+```
+
+Add pry gem to Gemfile development and test group:
+
+```
+  gem 'pry'
+```
+
+Install the pry gem:
+
+```
+docker-compose exec web bundle install
+```
+
+
 
 ## Issues
 

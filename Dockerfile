@@ -12,6 +12,8 @@ WORKDIR /tmp
 ADD Gemfile .
 ADD Gemfile.lock .
 
+ENV BUNDLE_PATH /gems
+
 RUN bundle install
 
 # Copy app
