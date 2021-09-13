@@ -6,6 +6,7 @@ class JobPostsController < ApplicationController
   # GET /job_posts or /job_posts.json
   def index
     @job_posts = JobPost.all
+    byebug
   end
 
   # GET /job_posts/1 or /job_posts/1.json

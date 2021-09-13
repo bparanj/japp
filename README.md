@@ -1270,6 +1270,23 @@ or
 docker-compose run --rm db psql -U rails -h db --dbname=japp_development
 ```
 
+Where is the data stored by the database?
+
+```
+docker volume inspect --format '{{ .Mountpoint }}' japp_dbdata
+/var/lib/docker/volumes/japp_dbdata/_data
+```
+
+## Debugging
+
+Add byebug to set a breakpoint in the code. Start an interactive session:
+
+```
+docker-compose run --service-ports web
+```
+
+Debug in the interactive terminal session.
+
 ## Issues
 
 1. Provide a way to create a new Rails app without providing all the steps in the command line and installing anything on the host.
