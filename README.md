@@ -1330,8 +1330,8 @@ docker-compose exec web bundle install
 
 Add pry gem to Gemfile development and test group:
 
-```
-  gem 'pry'
+```ruby
+gem 'pry'
 ```
 
 Install the pry gem:
@@ -1340,7 +1340,68 @@ Install the pry gem:
 docker-compose exec web bundle install
 ```
 
+## VirtualBox 
 
+Check VirtualBox version:
+
+```
+ VBoxManage --version
+```
+
+6.1.26_Ubuntur145957
+
+Install Docker Machine:
+
+```
+curl -L https://github.com/docker/machine/releases/download/v0.16.2/docker-machine-`uname -s`-`uname -m` >/tmp/docker-machine &&
+    chmod +x /tmp/docker-machine &&
+    sudo cp /tmp/docker-machine /usr/local/bin/docker-machine
+```
+
+Docker Machine Releases: https://github.com/docker/machine/releases
+
+Check Docker Machine version:
+
+```
+docker-machine --version
+```
+
+docker-machine version 0.16.2, build bd45ab13.
+
+Install Docker Machine auto complete scripts:
+
+```
+base=https://raw.githubusercontent.com/docker/machine/v0.16.2
+for i in docker-machine-prompt.bash docker-machine-wrapper.bash docker-machine.bash
+do
+sudo wget "$base/contrib/completion/bash/${i}" -P /etc/bash_completion.d
+done
+```
+
+View the help:
+
+```
+docker-machine
+```
+
+```
+docker-machine create --driver virtualbox local-vm-1
+Creating CA: /home/bparanj/.docker/machine/certs/ca.pem
+Creating client certificate: /home/bparanj/.docker/machine/certs/cert.pem
+Running pre-create checks...
+Error with pre-create check: "This computer doesn't have VT-X/AMD-v enabled. Enabling it in the BIOS is mandatory"
+```
+
+```
+docker-machine create --virtualbox-no-vtx-check --driver virtualbox local-vm-1
+```
+
+Error:
+
+```
+VBoxManage: error: AMD-V is not available (VERR_SVM_NO_SVM)
+VBoxManage: error: Details: code NS_ERROR_FAILURE (0x80004005), component ConsoleWrap, interface IConsole
+```
 
 ## Issues
 
